@@ -1,0 +1,270 @@
+[gd_scene load_steps=26 format=2]
+
+[ext_resource path="res://assets/1bitplatformerpack/Tiles/Transparent/tile_0240.png" type="Texture" id=1]
+[ext_resource path="res://scenes/Player/PlayerScript.gd" type="Script" id=2]
+[ext_resource path="res://assets/1bitplatformerpack/Tiles/Transparent/tile_0243.png" type="Texture" id=3]
+[ext_resource path="res://assets/1bitplatformerpack/Tiles/Transparent/tile_0242.png" type="Texture" id=4]
+[ext_resource path="res://assets/1bitplatformerpack/Tiles/Transparent/tile_0241.png" type="Texture" id=5]
+[ext_resource path="res://assets/1bitplatformerpack/Tiles/Transparent/tile_0062.png" type="Texture" id=6]
+[ext_resource path="res://assets/1bitplatformerpack/Tiles/Transparent/tile_0244.png" type="Texture" id=7]
+[ext_resource path="res://assets/1bitplatformerpack/Tiles/Transparent/tile_0082.png" type="Texture" id=8]
+[ext_resource path="res://scenes/object/mine.tscn" type="PackedScene" id=9]
+[ext_resource path="res://assets/customs/circles/circle4.png" type="Texture" id=10]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 5 ), ExtResource( 4 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "run",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( 7 ) ],
+"loop": false,
+"name": "jump",
+"speed": 0.0
+}, {
+"frames": [ ExtResource( 1 ) ],
+"loop": false,
+"name": "iddle",
+"speed": 0.0
+} ]
+
+[sub_resource type="SpriteFrames" id=7]
+animations = [ {
+"frames": [ ExtResource( 6 ), ExtResource( 8 ) ],
+"loop": true,
+"name": "Dialoge",
+"speed": 3.0
+} ]
+
+[sub_resource type="GDScript" id=8]
+script/source = "extends AnimatedSprite
+
+
+func _ready():
+	visible = false
+	pass
+
+func _process(delta):
+	if position.y <= -2:
+		visible = true
+	else:
+		visible = false
+	pass
+
+func _start_dialoge_anim():
+	
+	var tween = get_parent().get_node(\"Tween\")
+	tween.remove_all()
+	tween.interpolate_property(self, \"position:y\", position.y, -10, 0.1 * (-10 / position.y), tween.TRANS_EXPO, tween.EASE_OUT)
+	tween.start()
+	
+	pass
+
+func _stop_dialoge_anim():
+	var tween = get_parent().get_node(\"Tween\")
+	tween.remove_all()
+	tween.interpolate_property(self, \"position:y\", position.y, -1, 0.1 * (-10 / position.y), tween.TRANS_SINE, tween.EASE_IN_OUT)
+	tween.start()
+	
+	pass
+"
+
+[sub_resource type="CapsuleShape2D" id=17]
+radius = 4.0
+height = 2.0
+
+[sub_resource type="CapsuleShape2D" id=3]
+radius = 2.00001
+height = 5.99997
+
+[sub_resource type="CapsuleShape2D" id=5]
+radius = 6.00003
+height = 24.0
+
+[sub_resource type="Curve" id=9]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.702602, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=10]
+curve = SubResource( 9 )
+
+[sub_resource type="ParticlesMaterial" id=11]
+emission_shape = 2
+emission_box_extents = Vector3( 3, 1, -5 )
+flag_disable_z = true
+direction = Vector3( 0, -1, 0 )
+spread = 20.0
+gravity = Vector3( 0, 30, 0 )
+initial_velocity = 22.0
+initial_velocity_random = 0.25
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale_curve = SubResource( 10 )
+
+[sub_resource type="Curve" id=12]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.750929, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=13]
+curve = SubResource( 12 )
+
+[sub_resource type="ParticlesMaterial" id=14]
+emission_shape = 2
+emission_box_extents = Vector3( 3, 1, 1 )
+flag_disable_z = true
+direction = Vector3( 0, -1, 0 )
+gravity = Vector3( 0, 300, 0 )
+initial_velocity = 100.0
+initial_velocity_random = 0.2
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale_curve = SubResource( 13 )
+
+[sub_resource type="RectangleShape2D" id=15]
+extents = Vector2( 5, 5.5 )
+
+[sub_resource type="RectangleShape2D" id=16]
+extents = Vector2( 8, 8 )
+
+[sub_resource type="GDScript" id=6]
+script/source = "extends Position2D
+
+onready var player = get_node(\"../Player\")
+
+func _physics_process(delta):
+	if player == null:
+		queue_free()
+		pass
+	var target = player.global_position
+	var target_location:Vector2
+	
+	target_location.y = int(lerp(global_position.y,target.y,0.3))
+	target_location.x = int(lerp(global_position.x,target.x,0.3))
+	
+	global_position = target_location
+	pass
+"
+
+[node name="PlayerNodes" type="Node2D"]
+
+[node name="Player" type="KinematicBody2D" parent="."]
+z_index = 1
+collision/safe_margin = 0.001
+script = ExtResource( 2 )
+mine_cliche = ExtResource( 9 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="Player"]
+frames = SubResource( 1 )
+animation = "iddle"
+playing = true
+
+[node name="ActionIndicator" type="AnimatedSprite" parent="Player"]
+visible = false
+position = Vector2( 0, -1 )
+frames = SubResource( 7 )
+animation = "Dialoge"
+playing = true
+script = SubResource( 8 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+position = Vector2( 0, 3 )
+shape = SubResource( 17 )
+
+[node name="ObjectDetector" type="Area2D" parent="Player"]
+visible = false
+collision_layer = 2
+collision_mask = 2
+input_pickable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/ObjectDetector"]
+position = Vector2( 0, 6 )
+rotation = 1.57079
+shape = SubResource( 3 )
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Player/ObjectDetector"]
+rotation = 1.57079
+shape = SubResource( 3 )
+
+[node name="InteractDetector" type="Area2D" parent="Player"]
+visible = false
+collision_layer = 0
+collision_mask = 4
+input_pickable = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/InteractDetector"]
+position = Vector2( 0, 2 )
+rotation = 1.57079
+shape = SubResource( 5 )
+
+[node name="Tween" type="Tween" parent="Player"]
+
+[node name="WalkingParticles" type="Particles2D" parent="Player"]
+position = Vector2( 0, 7.5 )
+emitting = false
+amount = 24
+local_coords = false
+process_material = SubResource( 11 )
+texture = ExtResource( 10 )
+
+[node name="FallParticles" type="Particles2D" parent="Player"]
+position = Vector2( 0, 7.5 )
+emitting = false
+lifetime = 0.5
+one_shot = true
+preprocess = 0.1
+explosiveness = 1.0
+randomness = 1.0
+local_coords = false
+process_material = SubResource( 14 )
+texture = ExtResource( 10 )
+
+[node name="CrunchTimer" type="Timer" parent="Player"]
+process_mode = 0
+wait_time = 0.05
+one_shot = true
+
+[node name="MineSpawner" type="Position2D" parent="Player"]
+position = Vector2( 0, -16 )
+
+[node name="Damager" type="Area2D" parent="Player"]
+visible = false
+collision_layer = 0
+collision_mask = 16
+monitorable = false
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Damager"]
+position = Vector2( 0, 2.5 )
+shape = SubResource( 15 )
+
+[node name="CheckpointCollider" type="Area2D" parent="Player"]
+visible = false
+collision_layer = 0
+collision_mask = 32
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/CheckpointCollider"]
+shape = SubResource( 16 )
+
+[node name="CameraFollower" type="Position2D" parent="."]
+script = SubResource( 6 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Camera2D" type="Camera2D" parent="CameraFollower"]
+current = true
+process_mode = 0
+smoothing_enabled = true
+smoothing_speed = 15.0
+drag_margin_left = 0.3
+drag_margin_right = 0.3
+
+[connection signal="area_entered" from="Player/InteractDetector" to="Player" method="_on_InteractDetector_area_entered"]
+[connection signal="area_exited" from="Player/InteractDetector" to="Player" method="_on_InteractDetector_area_exited"]
+[connection signal="timeout" from="Player/CrunchTimer" to="Player" method="_on_CrunchTimer_timeout"]
+[connection signal="area_entered" from="Player/Damager" to="Player" method="_on_Damager_area_entered"]
+[connection signal="body_entered" from="Player/Damager" to="Player" method="_on_Damager_body_entered"]
+[connection signal="area_entered" from="Player/CheckpointCollider" to="Player" method="_on_CheckpointCollider_area_entered"]

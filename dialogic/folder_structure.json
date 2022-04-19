@@ -1,0 +1,146 @@
+{
+	"files": [
+
+	],
+	"folders": {
+		"Characters": {
+			"files": [
+
+			],
+			"folders": {
+
+			},
+			"metadata": {
+				"color": null,
+				"folded": false
+			}
+		},
+		"Definitions": {
+			"files": [
+
+			],
+			"folders": {
+
+			},
+			"metadata": {
+				"color": null,
+				"folded": false
+			}
+		},
+		"Themes": {
+			"files": [
+				"default-theme.cfg"
+			],
+			"folders": {
+
+			},
+			"metadata": {
+				"color": null,
+				"folded": false
+			}
+		},
+		"Timelines": {
+			"files": [
+				"timeline-1641245231.json",
+				"timeline-1642712546.json"
+			],
+			"folders": {
+				"English": {
+					"files": [
+
+					],
+					"folders": {
+
+					},
+					"metadata": {
+						"color": null,
+						"folded": false
+					}
+				},
+				"Español": {
+					"files": [
+
+					],
+					"folders": {
+						"Nivel 1": {
+							"files": [
+
+							],
+							"folders": {
+								"Obligatorio": {
+									"files": [
+										"timeline-1643328741.json",
+										"timeline-1643329595.json",
+										"timeline-1643330338.json"
+									],
+									"folders": {
+
+									},
+									"metadata": {
+										"color": null,
+										"folded": false
+									}
+								},
+								"Opcional": {
+									"files": [
+										"timeline-1643328445.json",
+										"timeline-1643329009.json",
+										"timeline-1643329794.json"
+									],
+									"folders": {
+
+									},
+									"metadata": {
+										"color": null,
+										"folded": false
+									}
+								}
+							},
+							"metadata": {
+								"color": null,
+								"folded": true
+							}
+						},
+						"Nivel 2": {
+							"files": [
+								"timeline-1643916579.json",
+								"timeline-1643916618.json",
+								"timeline-1643916743.json",
+								"timeline-1643916777.json",
+								"timeline-1643916921.json",
+								"timeline-1643917018.json"
+							],
+							"folders": {
+
+							},
+							"metadata": {
+								"color": null,
+								"folded": false
+							}
+						}
+					},
+					"metadata": {
+						"color": null,
+						"folded": false
+					}
+				},
+				"Prueba": {
+					"files": [
+						"timeline-1643252564.json"
+					],
+					"folders": {
+
+					},
+					"metadata": {
+						"color": null,
+						"folded": true
+					}
+				}
+			},
+			"metadata": {
+				"color": null,
+				"folded": false
+			}
+		}
+	}
+}

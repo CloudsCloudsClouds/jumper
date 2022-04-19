@@ -1,0 +1,43 @@
+{
+	"events": [
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "El otro dia invite a un viejo amigo de la infancia a mi casa. \nNo no habiamos visto desde la secundaria y queriamos reconectar."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "El llego completamente formal, usando un traje y corbata.\nY de paso eran de lujo.\nNos saludamos en la puerta y le invite a almorzar."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "¿De que se suponia que hablaria con el?\nHablamos el guion de como te fue en la vida, pero supe que la persona en frente mio era alguien totalmente distinto"
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Pese a todo, en ningun momento nada parecio inatural.\nEra un guion, pero la posibilidad de reconectar seguia ahi."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Esas eran muy buenas noticias"
+		},
+		{
+			"emit_signal": "end",
+			"event_id": "dialogic_040"
+		}
+	],
+	"metadata": {
+		"dialogic-version": "1.3",
+		"file": "timeline-1643328445.json",
+		"name": "Lo invite a mi casa"
+	}
+}

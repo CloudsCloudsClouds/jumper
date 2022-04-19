@@ -1,0 +1,55 @@
+{
+	"events": [
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Y le dije, que quede claro, lo primero que le dije es que necesitaba un favor.\nLo invite a almorzar...\n...En la casa."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "El era un chico muy problematico.\nDe los que casi se hace expulsar de secundaria por golpear a alguien.\nO por ser maleante en general."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Es bizarro pensar como alguien como el pudo acabar con tanto exito en la vida.\nYo seria igual que el, si hubiera tenido una oportunidad, y menos mala suerte."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Ya despues de comer, curoseamos mi casa.\nClaro, la curiosidad de ver como un previo hueco en la casa se veria."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Y nos quejamos, nos quejamos de la vida y de lo injusta que es.\nClaro, yo si tenia motivos de quejarme. \nEl se limito a darme la razon."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Se fue bastante rapido, decia que tenia que volver a su oficina.\nYo igual deberia ir a la mia.\nNos despedimos en la puerta, y nos fuimos por direcciones contrarias."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Lo voy a volver a invitar.\nLe tengo que seguir insistiendo, es urgente."
+		},
+		{
+			"emit_signal": "end",
+			"event_id": "dialogic_040"
+		}
+	],
+	"metadata": {
+		"dialogic-version": "1.3",
+		"file": "timeline-1643329794.json",
+		"name": "Despues de comer"
+	}
+}

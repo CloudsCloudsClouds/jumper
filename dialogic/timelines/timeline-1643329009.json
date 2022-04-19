@@ -1,0 +1,49 @@
+{
+	"events": [
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "¿Es hipocrita si digo que estaba esperando a pedirle un favor?\nDigo, en ese momento realmente necesitaba un favor."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Los ahorros de mi vida se desvanecieron en un mal dia.\nSin previo aviso, un auto choco y atraveso mi casa."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Nadie habia resultado herido, o nadie que me importara.\nPero el costo del accidente..."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Imaginate, ya gastaste los mejores años de tu vida trabajando.\nAhorrando, por un mejor futuro, para ese sueño.\nPara cuando llege esa oportunidad."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Y entonces llega un quien sea, sin licensia.\nDestruye lo mejor de tus mejores dias.\nY asi tan rapido como vino, asi de rapido se fue."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "No me malentiendas, saque hasta la ultima gota en reparaciones que pude.\nPero aun despues de eso, solo me queda una deuda."
+		},
+		{
+			"emit_signal": "end",
+			"event_id": "dialogic_040"
+		}
+	],
+	"metadata": {
+		"dialogic-version": "1.3",
+		"file": "timeline-1643329009.json",
+		"name": "La situacion actual"
+	}
+}

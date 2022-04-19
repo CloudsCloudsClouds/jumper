@@ -1,0 +1,124 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://assets/1bitplatformerpack/Tiles/Transparent/tile_0369.png" type="Texture" id=1]
+[ext_resource path="res://assets/1bitplatformerpack/Tiles/Transparent/tile_0370.png" type="Texture" id=2]
+
+[sub_resource type="GDScript" id=9]
+script/source = "extends Node2D
+
+var active :bool = false setget set_active 
+
+func _on_Portal1_body_entered(body):
+	if !active:
+		body.global_position = $Portal2.global_position
+		set_active(true)
+	pass # Replace with function body.
+
+
+func _on_Portal2_body_entered(body):
+	if !active:
+		body.global_position = $Portal1.global_position
+		body.global_position = $Portal1.global_position
+		set_active(true)
+	pass # Replace with function body.
+
+func set_active(is_active):
+	active = is_active
+	if active == true:
+		$Timer.start()
+		pass
+	pass
+
+
+func _on_Timer_timeout():
+	set_active(false)
+	pass # Replace with function body.
+"
+
+[sub_resource type="CircleShape2D" id=2]
+
+[sub_resource type="Curve" id=3]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=4]
+curve = SubResource( 3 )
+
+[sub_resource type="ParticlesMaterial" id=10]
+emission_shape = 1
+emission_sphere_radius = 10.0
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 1.0
+radial_accel = -100.0
+tangential_accel = 70.0
+tangential_accel_random = 1.0
+scale_curve = SubResource( 4 )
+
+[sub_resource type="Curve" id=6]
+_data = [ Vector2( 0, 0 ), 0.0, 4.26023, 0, 0, Vector2( 0.945652, 1 ), 0.35602, 0.35602, 0, 0, Vector2( 1, 0 ), -5.79753, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=7]
+curve = SubResource( 6 )
+
+[sub_resource type="ParticlesMaterial" id=8]
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 1.5
+scale_curve = SubResource( 7 )
+
+[node name="Portals" type="Node2D"]
+script = SubResource( 9 )
+
+[node name="Portal1" type="Area2D" parent="."]
+position = Vector2( -13, 0 )
+collision_layer = 0
+monitorable = false
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Portal1"]
+shape = SubResource( 2 )
+
+[node name="Particles2D" type="Particles2D" parent="Portal1"]
+amount = 50
+lifetime = 2.0
+preprocess = 1.0
+process_material = SubResource( 10 )
+
+[node name="Particles2D2" type="Particles2D" parent="Portal1"]
+amount = 5
+process_material = SubResource( 8 )
+texture = ExtResource( 1 )
+
+[node name="Portal2" type="Area2D" parent="."]
+position = Vector2( 19, 0 )
+collision_layer = 0
+monitorable = false
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Portal2"]
+shape = SubResource( 2 )
+
+[node name="Particles2D" type="Particles2D" parent="Portal2"]
+amount = 50
+lifetime = 2.0
+preprocess = 1.0
+process_material = SubResource( 10 )
+
+[node name="Particles2D2" type="Particles2D" parent="Portal2"]
+amount = 5
+process_material = SubResource( 8 )
+texture = ExtResource( 2 )
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.31
+
+[connection signal="body_entered" from="Portal1" to="." method="_on_Portal1_body_entered"]
+[connection signal="body_entered" from="Portal2" to="." method="_on_Portal2_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

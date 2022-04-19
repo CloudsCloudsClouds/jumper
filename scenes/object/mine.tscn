@@ -1,0 +1,286 @@
+[gd_scene load_steps=26 format=2]
+
+[ext_resource path="res://assets/customs/mine/mine2.png" type="Texture" id=1]
+[ext_resource path="res://assets/customs/mine/mine1.png" type="Texture" id=2]
+[ext_resource path="res://assets/1bitplatformerpack/Tiles/Transparent/tile_0185.png" type="Texture" id=3]
+[ext_resource path="res://assets/customs/circles/circle8.png" type="Texture" id=4]
+[ext_resource path="res://assets/customs/circles/circle16.png" type="Texture" id=5]
+[ext_resource path="res://assets/customs/circles/circle4.png" type="Texture" id=6]
+
+[sub_resource type="PhysicsMaterial" id=1]
+friction = 0.3
+bounce = 0.4
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends RigidBody2D
+
+onready var father = get_tree().get_current_scene()
+
+export var is_active:bool = false setget activate, is_now_active
+var exploted = false
+
+func activate(active):
+	if active == true:
+		$ActiveIndicator.emitting = true
+		pass
+	is_active = active
+	pass
+
+
+
+func _on_ActivationTimer_timeout():
+	randomize()
+	if exploted == true:
+		queue_free()
+	else:
+		$ActivationTimer.wait_time = rand_range(3,7)
+		activate(true)
+	pass # Replace with function body.
+
+
+func _on_CollisionDetector_area_entered(area):
+	if is_active:
+		detonate(area)
+	elif area.get_parent().has_method(\"is_now_active\"):
+		detonate(area)
+		pass
+	pass # Replace with function body.
+
+func is_now_active():
+	return is_active
+
+func detonate(area):
+	father.flash()
+	if area != null:
+		if area.get_parent().has_method(\"_on_mine_exploded\"):
+			area.get_parent()._on_mine_exploded()
+			if area.get_parent().has_method(\"_set_vertical_velocity\"):
+				area.get_parent()._set_vertical_velocity(700)
+				pass
+			pass
+		pass
+	$CollisionDetector/CollisionShape2D.scale = Vector2(5,5)
+	$AreaDeletor.start()
+	exploted = true
+	$ActivationTimer.stop()
+	$ActivationTimer.wait_time = 0.7
+	$ActivationTimer.start()
+	$AnimatedSprite.visible = false
+	$ExplosionParticle1.emitting = true
+	$ExplosionParticle2.emitting = true
+	$ExplosionParticle3.emitting = true
+	$ExplosionParticle4.emitting = true
+	$ExplosionParticle5.emitting = true
+	pass
+
+func _on_AreaDeletor_timeout():
+	$CollisionDetector.queue_free()
+	pass # Replace with function body.
+
+func _set_vertical_velocity(VerVel:float):
+	linear_velocity.y = -VerVel/2
+	pass
+
+"
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 1 ) ],
+"loop": true,
+"name": "animation",
+"speed": 2.0
+}, {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "iddle",
+"speed": 5.0
+} ]
+
+[sub_resource type="CapsuleShape2D" id=4]
+radius = 1.0
+height = 4.0
+
+[sub_resource type="CapsuleShape2D" id=5]
+radius = 2.0
+height = 4.0
+
+[sub_resource type="Curve" id=6]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.747212, 1 ), -0.0359629, -0.0359629, 0, 0, Vector2( 1, 0 ), 0.120089, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=7]
+curve = SubResource( 6 )
+
+[sub_resource type="ParticlesMaterial" id=8]
+flag_disable_z = true
+direction = Vector3( 0, -1, 0 )
+spread = 0.0
+gravity = Vector3( 0, 98, 0 )
+initial_velocity = 50.0
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale_curve = SubResource( 7 )
+
+[sub_resource type="Curve" id=9]
+_data = [ Vector2( 0.498141, 1 ), 0.0, 0.0824852, 0, 0, Vector2( 1, 0 ), -3.51534, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=19]
+curve = SubResource( 9 )
+
+[sub_resource type="ParticlesMaterial" id=11]
+emission_shape = 1
+emission_sphere_radius = 3.0
+flag_disable_z = true
+direction = Vector3( 0, 0, 0 )
+spread = 180.0
+gravity = Vector3( 0, -15, 0 )
+initial_velocity = 4.0
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale_curve = SubResource( 19 )
+
+[sub_resource type="Curve" id=18]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.98513, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=20]
+curve = SubResource( 18 )
+
+[sub_resource type="ParticlesMaterial" id=12]
+emission_shape = 1
+emission_sphere_radius = 4.0
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 3.0
+scale_curve = SubResource( 20 )
+
+[sub_resource type="Curve" id=13]
+_data = [ Vector2( 0.635688, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=21]
+curve = SubResource( 13 )
+
+[sub_resource type="Curve" id=15]
+_data = [ Vector2( 0, 0.55 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=22]
+curve = SubResource( 15 )
+
+[sub_resource type="ParticlesMaterial" id=17]
+trail_divisor = 8
+trail_size_modifier = SubResource( 22 )
+emission_shape = 1
+emission_sphere_radius = 2.0
+flag_disable_z = true
+direction = Vector3( 0, -1, 0 )
+spread = 90.0
+gravity = Vector3( 0, 98, 0 )
+initial_velocity = 200.0
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale_curve = SubResource( 21 )
+
+[node name="Mine" type="RigidBody2D"]
+collision_layer = 0
+mode = 2
+physics_material_override = SubResource( 1 )
+gravity_scale = 3.0
+script = SubResource( 2 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0, 4 )
+frames = SubResource( 3 )
+animation = "animation"
+frame = 1
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 7 )
+rotation = 1.5708
+shape = SubResource( 4 )
+
+[node name="CollisionDetector" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionDetector"]
+position = Vector2( 0, 6 )
+rotation = 1.5708
+shape = SubResource( 5 )
+
+[node name="ActiveIndicator" type="Particles2D" parent="."]
+position = Vector2( 0, 6 )
+emitting = false
+amount = 1
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource( 8 )
+texture = ExtResource( 3 )
+
+[node name="ActivationTimer" type="Timer" parent="."]
+wait_time = 0.6
+autostart = true
+
+[node name="ExplosionParticle1" type="Particles2D" parent="."]
+position = Vector2( 0, 4 )
+emitting = false
+amount = 12
+lifetime = 0.7
+one_shot = true
+explosiveness = 1.0
+local_coords = false
+process_material = SubResource( 11 )
+texture = ExtResource( 4 )
+
+[node name="ExplosionParticle2" type="Particles2D" parent="."]
+emitting = false
+lifetime = 0.1
+one_shot = true
+explosiveness = 1.0
+local_coords = false
+process_material = SubResource( 12 )
+texture = ExtResource( 5 )
+
+[node name="ExplosionParticle3" type="Particles2D" parent="."]
+emitting = false
+amount = 16
+lifetime = 0.2
+one_shot = true
+local_coords = false
+process_material = SubResource( 17 )
+texture = ExtResource( 6 )
+
+[node name="ExplosionParticle4" type="Particles2D" parent="."]
+emitting = false
+amount = 16
+lifetime = 0.2
+one_shot = true
+local_coords = false
+process_material = SubResource( 17 )
+texture = ExtResource( 6 )
+
+[node name="ExplosionParticle5" type="Particles2D" parent="."]
+emitting = false
+amount = 16
+lifetime = 0.2
+one_shot = true
+local_coords = false
+process_material = SubResource( 17 )
+texture = ExtResource( 6 )
+
+[node name="ExplosionParticle6" type="Particles2D" parent="."]
+emitting = false
+amount = 16
+lifetime = 0.2
+one_shot = true
+local_coords = false
+process_material = SubResource( 17 )
+texture = ExtResource( 6 )
+
+[node name="AreaDeletor" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[connection signal="area_entered" from="CollisionDetector" to="." method="_on_CollisionDetector_area_entered"]
+[connection signal="timeout" from="ActivationTimer" to="." method="_on_ActivationTimer_timeout"]
+[connection signal="timeout" from="AreaDeletor" to="." method="_on_AreaDeletor_timeout"]

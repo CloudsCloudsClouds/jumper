@@ -1,0 +1,141 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://assets/customs/circles/circle16.png" type="Texture" id=1]
+[ext_resource path="res://assets/customs/circles/circle8.png" type="Texture" id=2]
+[ext_resource path="res://assets/customs/circles/circle4.png" type="Texture" id=3]
+
+[sub_resource type="GDScript" id=27]
+script/source = "extends Node2D
+
+
+func _ready():
+	$ExplosionParticle1.emitting = true
+	$ExplosionParticle2.emitting = true
+	$ExplosionParticle3.emitting = true
+	$ExplosionParticle4.emitting = true
+	$ExplosionParticle5.emitting = true
+	$ExplosionParticle6.emitting = true
+	pass
+
+
+func _on_Timer_timeout():
+	queue_free()
+	pass # Replace with function body.
+"
+
+[sub_resource type="Curve" id=20]
+_data = [ Vector2( 0.498141, 1 ), 0.0, 0.0824852, 0, 0, Vector2( 1, 0 ), -3.51534, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=10]
+curve = SubResource( 20 )
+
+[sub_resource type="ParticlesMaterial" id=21]
+emission_shape = 1
+emission_sphere_radius = 3.0
+flag_disable_z = true
+direction = Vector3( 0, 0, 0 )
+spread = 180.0
+gravity = Vector3( 0, -15, 0 )
+initial_velocity = 4.0
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale_curve = SubResource( 10 )
+
+[sub_resource type="Curve" id=22]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.98513, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=19]
+curve = SubResource( 22 )
+
+[sub_resource type="ParticlesMaterial" id=23]
+emission_shape = 1
+emission_sphere_radius = 4.0
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 3.0
+scale_curve = SubResource( 19 )
+
+[sub_resource type="Curve" id=25]
+_data = [ Vector2( 0, 0.55 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=16]
+curve = SubResource( 25 )
+
+[sub_resource type="ParticlesMaterial" id=26]
+trail_divisor = 16
+trail_size_modifier = SubResource( 16 )
+emission_shape = 1
+emission_sphere_radius = 2.0
+flag_disable_z = true
+direction = Vector3( 0, 0, 0 )
+spread = 180.0
+gravity = Vector3( 0, 98, 0 )
+initial_velocity = 200.0
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+
+[node name="SmallExplosion" type="Node2D"]
+script = SubResource( 27 )
+
+[node name="ExplosionParticle1" type="Particles2D" parent="."]
+emitting = false
+amount = 12
+lifetime = 0.7
+one_shot = true
+explosiveness = 1.0
+local_coords = false
+process_material = SubResource( 21 )
+texture = ExtResource( 2 )
+
+[node name="ExplosionParticle2" type="Particles2D" parent="."]
+emitting = false
+lifetime = 0.1
+one_shot = true
+explosiveness = 1.0
+local_coords = false
+process_material = SubResource( 23 )
+texture = ExtResource( 1 )
+
+[node name="ExplosionParticle3" type="Particles2D" parent="."]
+emitting = false
+amount = 32
+lifetime = 0.2
+one_shot = true
+local_coords = false
+process_material = SubResource( 26 )
+texture = ExtResource( 3 )
+
+[node name="ExplosionParticle4" type="Particles2D" parent="."]
+emitting = false
+amount = 32
+lifetime = 0.2
+one_shot = true
+local_coords = false
+process_material = SubResource( 26 )
+texture = ExtResource( 3 )
+
+[node name="ExplosionParticle5" type="Particles2D" parent="."]
+emitting = false
+amount = 32
+lifetime = 0.2
+one_shot = true
+local_coords = false
+process_material = SubResource( 26 )
+texture = ExtResource( 3 )
+
+[node name="ExplosionParticle6" type="Particles2D" parent="."]
+emitting = false
+amount = 32
+lifetime = 0.2
+one_shot = true
+local_coords = false
+process_material = SubResource( 26 )
+texture = ExtResource( 3 )
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.7
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

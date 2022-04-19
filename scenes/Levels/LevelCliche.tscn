@@ -1,0 +1,54 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://scenes/Tiles/GroundWallTiles.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/Tiles/StaticVegetation.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/Player/Player.tscn" type="PackedScene" id=3]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+export var lives:int = 5
+export var player_resource:PackedScene
+export var mines:int = 6
+export var time:int = 60
+
+onready var father = get_tree().get_current_scene()
+
+func _ready():
+	father.set_lifes(lives,false)
+	father.set_mines(mines,false)
+	father.set_time(time)
+	var new_player = player_resource.instance()
+	add_child(new_player)
+	new_player.global_position = $PlayerSpawner.global_position
+	$PlayerNodes/Player.checkpoint = $PlayerSpawner.global_position
+	pass
+
+
+func _on_VisibilityNotifier2D_screen_exited():
+	$PlayerNodes/Player._on_damage()
+	pass # Replace with function body.
+"
+
+[node name="Level" type="Node2D"]
+script = SubResource( 1 )
+player_resource = ExtResource( 3 )
+mines = 10
+
+[node name="GroundWallTiles" parent="." instance=ExtResource( 1 )]
+tile_data = PoolIntArray( 65538, 1, 196608, 65539, 1, 196609, 65540, 1, 196610 )
+
+[node name="StaticVegetation" parent="." instance=ExtResource( 2 )]
+collision_layer = 0
+collision_mask = 0
+
+[node name="PlayerSpawner" type="Position2D" parent="."]
+position = Vector2( 56, -32 )
+__meta__ = {
+"_gizmo_extents_": 50.0
+}
+
+[node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
+position = Vector2( 64, 8 )
+
+[connection signal="screen_exited" from="VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"]

@@ -1,0 +1,327 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://scenes/UI/Hearth.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/customs/mine/mine1.png" type="Texture" id=2]
+[ext_resource path="res://assets/Fonts/kenney pixel data.tres" type="DynamicFont" id=3]
+[ext_resource path="res://scenes/Levels/Spanish/Spanish1.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/Levels/Spanish/Spanish2.tscn" type="PackedScene" id=5]
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends Control
+
+var current_level
+var level_number :int= 1
+
+export(Array, PackedScene) var SpanishScenes
+export(Array, PackedScene) var EnglishScenes
+
+export var level_test:PackedScene = null
+
+var lang = Commons.LANG.SPANISH
+
+var life_display setget , get_lifes
+var mine_display setget , get_mines
+var time_display setget set_time, get_time
+signal game_state_signal(state)
+
+var game_state = Commons.STATES.GAMEPLAY setget set_game_state
+
+func flash():
+	$FlashStop.start()
+	$ColorRect.visible = true
+	pass
+
+func set_time(time):
+	$Tween.interpolate_property($TransitionRect,\"anchor_top\" ,0,1, 1,Tween.TRANS_BOUNCE,Tween.EASE_OUT)
+	$Tween.start()
+	time_display = time
+	$TimeLeft.text = var2str(time_display)
+	pass
+
+func get_time():
+	return time_display
+
+func set_lifes(lifes,sustraction:bool):
+	if sustraction:
+		life_display -= lifes
+		pass
+	else:
+		life_display = lifes
+		pass
+	
+	if life_display <= 0:
+		set_game_state(Commons.STATES.GAMEOVER)
+	
+	pass
+	
+	#Ya se, no digas nada
+	match life_display:
+		1:
+			$VBoxContainer/LifeDisplay/Hearth5.visible = false
+			$VBoxContainer/LifeDisplay/Hearth4.visible = false
+			$VBoxContainer/LifeDisplay/Hearth3.visible = false
+			$VBoxContainer/LifeDisplay/Hearth2.visible = false
+			$VBoxContainer/LifeDisplay/Hearth1.visible = true
+		2:
+			$VBoxContainer/LifeDisplay/Hearth5.visible = false
+			$VBoxContainer/LifeDisplay/Hearth4.visible = false
+			$VBoxContainer/LifeDisplay/Hearth3.visible = false
+			$VBoxContainer/LifeDisplay/Hearth2.visible = true
+			$VBoxContainer/LifeDisplay/Hearth1.visible = true
+		3:
+			$VBoxContainer/LifeDisplay/Hearth5.visible = false
+			$VBoxContainer/LifeDisplay/Hearth4.visible = false
+			$VBoxContainer/LifeDisplay/Hearth3.visible = true
+			$VBoxContainer/LifeDisplay/Hearth2.visible = true
+			$VBoxContainer/LifeDisplay/Hearth1.visible = true
+		4:
+			$VBoxContainer/LifeDisplay/Hearth5.visible = false
+			$VBoxContainer/LifeDisplay/Hearth4.visible = true
+			$VBoxContainer/LifeDisplay/Hearth3.visible = true
+			$VBoxContainer/LifeDisplay/Hearth2.visible = true
+			$VBoxContainer/LifeDisplay/Hearth1.visible = true
+		5:
+			$VBoxContainer/LifeDisplay/Hearth5.visible = true
+			$VBoxContainer/LifeDisplay/Hearth4.visible = true
+			$VBoxContainer/LifeDisplay/Hearth3.visible = true
+			$VBoxContainer/LifeDisplay/Hearth2.visible = true
+			$VBoxContainer/LifeDisplay/Hearth1.visible = true
+		_:
+			gameover()
+	pass
+
+func get_lifes():
+	return life_display
+
+
+
+func set_mines(new_mine_val,sustraction:bool):
+	
+	if sustraction:
+		mine_display -= new_mine_val
+		pass
+	else:
+		mine_display = new_mine_val
+	
+	$VBoxContainer/MineDisplay/MineCounter.text = var2str(mine_display)
+	pass
+
+
+func get_mines():
+	return mine_display
+
+
+func _add_dialoge(dialog_name):
+	var new_dialog = Dialogic.start(dialog_name)
+	new_dialog.connect(\"dialogic_signal\", self, \"dialog_listener\")
+	add_child(new_dialog)
+	set_game_state(Commons.STATES.DIALOGE)
+	pass
+
+
+func _next_level():
+	level_number += 1
+	gameover()
+	pass
+
+func _ready():
+	_prepare_level(SpanishScenes[level_number - 1])
+	pass
+
+func _prepare_level(level):
+	Engine.set_time_scale(1)
+	set_game_state(Commons.STATES.GAMEPLAY)
+	current_level = level.instance()
+	$ViewportContainer/Viewport.add_child(current_level)
+	current_level.global_position = Vector2.ZERO
+	pass
+
+
+
+
+
+
+func _input(_event):
+	if Input.is_action_just_pressed(\"ui_full\"):
+		if OS.window_fullscreen:
+			OS.window_fullscreen = false
+		else:
+			OS.window_fullscreen = true
+		pass
+	if Input.is_action_just_pressed(\"ui_quit\"):
+		get_tree().quit()
+		pass
+	pass
+
+
+
+func dialog_listener(argument):
+	if argument == \"end\":
+		set_game_state(Commons.STATES.GAMEPLAY)
+	pass
+
+func set_game_state(new_state):
+	emit_signal(\"game_state_signal\",new_state)
+	
+	game_state = new_state
+	
+	if game_state == Commons.STATES.GAMEPLAY:
+		$Seg1Timer.start()
+		pass
+	else:
+		$Seg1Timer.stop()
+	pass
+
+
+func _on_FlashStop_timeout():
+	$ColorRect.visible = false
+	pass # Replace with function body.
+
+
+func _on_Seg1Timer_timeout():
+	if time_display != 0:
+		time_display -= 1
+	else:
+		gameover()
+	
+	$TimeLeft.text = var2str(time_display)
+	pass # Replace with function body.
+
+func gameover():
+	$GameOverTimer.start()
+	if !$Tween.is_active():
+		$Tween.interpolate_property($TransitionRect,\"anchor_top\" ,1,0, 0.5,Tween.TRANS_BOUNCE,Tween.EASE_OUT)
+		$Tween.start()
+		Engine.set_time_scale(1)
+		current_level.queue_free()
+		current_level = null
+	pass
+
+
+func _on_GameOverTimer_timeout():
+	_prepare_level(SpanishScenes[level_number - 1])
+	pass # Replace with function body.
+"
+
+[node name="LevelBase" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = SubResource( 2 )
+SpanishScenes = [ ExtResource( 4 ), ExtResource( 5 ), null, null, null, null, null ]
+level_test = ExtResource( 4 )
+
+[node name="ViewportContainer" type="ViewportContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Viewport" type="Viewport" parent="ViewportContainer"]
+size = Vector2( 240, 180 )
+transparent_bg = true
+handle_input_locally = false
+hdr = false
+disable_3d = true
+usage = 0
+render_target_update_mode = 3
+gui_disable_input = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LifeDisplay" type="HBoxContainer" parent="VBoxContainer"]
+margin_right = 96.0
+margin_bottom = 16.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hearth1" parent="VBoxContainer/LifeDisplay" instance=ExtResource( 1 )]
+margin_right = 16.0
+margin_bottom = 16.0
+
+[node name="Hearth2" parent="VBoxContainer/LifeDisplay" instance=ExtResource( 1 )]
+margin_left = 20.0
+margin_right = 36.0
+margin_bottom = 16.0
+
+[node name="Hearth3" parent="VBoxContainer/LifeDisplay" instance=ExtResource( 1 )]
+margin_left = 40.0
+margin_right = 56.0
+margin_bottom = 16.0
+
+[node name="Hearth4" parent="VBoxContainer/LifeDisplay" instance=ExtResource( 1 )]
+margin_left = 60.0
+margin_right = 76.0
+margin_bottom = 16.0
+
+[node name="Hearth5" parent="VBoxContainer/LifeDisplay" instance=ExtResource( 1 )]
+margin_left = 80.0
+margin_right = 96.0
+margin_bottom = 16.0
+
+[node name="MineDisplay" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 20.0
+margin_right = 96.0
+margin_bottom = 29.0
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/MineDisplay"]
+margin_right = 8.0
+margin_bottom = 9.0
+texture = ExtResource( 2 )
+
+[node name="MineCounter" type="Label" parent="VBoxContainer/MineDisplay"]
+margin_left = 12.0
+margin_right = 12.0
+margin_bottom = 9.0
+custom_fonts/font = ExtResource( 3 )
+
+[node name="FlashStop" type="Timer" parent="."]
+wait_time = 0.02
+one_shot = true
+
+[node name="ColorRect" type="ColorRect" parent="."]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.65098, 0.65098, 0.65098, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TimeLeft" type="Label" parent="."]
+anchor_left = 0.854167
+anchor_top = 0.0666667
+anchor_right = 0.958
+anchor_bottom = 0.117
+margin_top = -4.76837e-07
+margin_right = 0.0799866
+margin_bottom = -0.0600014
+custom_fonts/font = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Seg1Timer" type="Timer" parent="."]
+autostart = true
+
+[node name="TransitionRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="GameOverTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="FlashStop" to="." method="_on_FlashStop_timeout"]
+[connection signal="timeout" from="Seg1Timer" to="." method="_on_Seg1Timer_timeout"]
+[connection signal="timeout" from="GameOverTimer" to="." method="_on_GameOverTimer_timeout"]

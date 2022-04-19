@@ -1,0 +1,552 @@
+[gd_scene load_steps=25 format=2]
+
+[ext_resource path="res://scenes/Player/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/Tiles/StaticVegetation.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/Tiles/GroundWallTiles.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/object/Jumper.tscn" type="PackedScene" id=4]
+[ext_resource path="res://assets/1bitplatformerpack/Tiles/Transparent/tile_0002.png" type="Texture" id=5]
+[ext_resource path="res://scenes/object/UpPush.tscn" type="PackedScene" id=6]
+[ext_resource path="res://assets/1bitplatformerpack/Tiles/Transparent/tile_0370.png" type="Texture" id=7]
+[ext_resource path="res://assets/1bitplatformerpack/Tiles/Transparent/tile_0369.png" type="Texture" id=8]
+[ext_resource path="res://scenes/object/mine.tscn" type="PackedScene" id=9]
+[ext_resource path="res://assets/1bitplatformerpack/Tilemap/monochrome_tilemap_transparent_packed.png" type="Texture" id=10]
+[ext_resource path="res://scenes/npc/JumperEnemy.tscn" type="PackedScene" id=11]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+export var lives:int = 3
+export var player_resource:PackedScene
+export var mines:int = 6
+export var time:int = 60
+
+onready var father = get_tree().get_current_scene()
+
+func _ready():
+	father.set_lifes(lives,false)
+	father.set_mines(mines,false)
+	father.set_time(time)
+	var new_player = player_resource.instance()
+	add_child(new_player)
+	new_player.global_position = $PlayerSpawner.global_position
+	$PlayerNodes/Player.checkpoint = $PlayerSpawner.global_position
+	pass
+"
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 4, 64 )
+
+[sub_resource type="GDScript" id=9]
+script/source = "extends Node2D
+
+var active :bool = false setget set_active 
+
+func _on_Portal1_body_entered(body):
+	if !active:
+		body.global_position = $Portal2.global_position
+		set_active(true)
+	pass # Replace with function body.
+
+
+func _on_Portal2_body_entered(body):
+	if !active:
+		body.global_position = $Portal1.global_position
+		body.global_position = $Portal1.global_position
+		set_active(true)
+	pass # Replace with function body.
+
+func set_active(is_active):
+	active = is_active
+	if active == true:
+		$Timer.start()
+		pass
+	pass
+
+
+func _on_Timer_timeout():
+	set_active(false)
+	pass # Replace with function body.
+"
+
+[sub_resource type="CircleShape2D" id=2]
+
+[sub_resource type="Curve" id=3]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=11]
+curve = SubResource( 3 )
+
+[sub_resource type="ParticlesMaterial" id=10]
+emission_shape = 1
+emission_sphere_radius = 10.0
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 1.0
+radial_accel = -100.0
+tangential_accel = 70.0
+tangential_accel_random = 1.0
+scale_curve = SubResource( 11 )
+
+[sub_resource type="Curve" id=6]
+_data = [ Vector2( 0, 0 ), 0.0, 4.26023, 0, 0, Vector2( 0.945652, 1 ), 0.35602, 0.35602, 0, 0, Vector2( 1, 0 ), -5.79753, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=7]
+curve = SubResource( 6 )
+
+[sub_resource type="ParticlesMaterial" id=8]
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 1.5
+scale_curve = SubResource( 7 )
+
+[sub_resource type="GDScript" id=12]
+script/source = "extends Area2D
+export var dialoge_name:String
+func _transmit_dialoge():
+	return dialoge_name
+"
+
+[sub_resource type="CapsuleShape2D" id=13]
+radius = 8.00002
+height = 16.0
+
+[sub_resource type="RectangleShape2D" id=14]
+extents = Vector2( 1, 6 )
+
+[node name="LevelTest2" type="Node2D"]
+script = SubResource( 1 )
+player_resource = ExtResource( 1 )
+mines = 5
+
+[node name="GroundWallTiles" parent="." instance=ExtResource( 3 )]
+tile_data = PoolIntArray( 6, 4, 0, 7, 4, 2, 8, 2, 196608, 9, 2, 196609, 10, 2, 196609, 11, 2, 196610, 16, 3, 0, 17, 3, 2, 65542, 4, 131072, 65543, 4, 131074, 65552, 3, 131072, 65553, 3, 131074, 131088, 5, 0, 131089, 5, 1, 131090, 5, 1, 131091, 5, 1, 131092, 5, 1, 131093, 5, 1, 131094, 5, 1, 131095, 5, 1, 131096, 5, 2, 196624, 5, 65536, 196625, 5, 65540, 196626, 5, 131073, 196627, 5, 131073, 196628, 5, 131073, 196629, 5, 131073, 196630, 5, 131073, 196631, 5, 131073, 196632, 5, 131074, 262144, 3, 0, 262145, 3, 2, 262160, 5, 65536, 262161, 5, 65538, 262162, 2, 0, 262163, 2, 1, 262164, 2, 1, 262165, 2, 1, 262166, 2, 1, 262167, 2, 1, 262168, 2, 2, 327680, 3, 65536, 327681, 3, 65538, 327696, 5, 65536, 327697, 5, 65538, 327698, 2, 65536, 327699, 2, 65540, 327700, 2, 131073, 327701, 2, 131073, 327702, 2, 131073, 327703, 2, 131076, 327704, 2, 65538, 393216, 3, 65536, 393217, 3, 65538, 393232, 5, 65536, 393233, 5, 65538, 393234, 2, 65536, 393235, 2, 65538, 393236, 4, 196608, 393237, 4, 196609, 393238, 4, 196610, 393239, 2, 65536, 393240, 2, 65538, 458752, 3, 65536, 458753, 3, 65538, 458768, 5, 131072, 458769, 5, 131074, 458770, 2, 65536, 458771, 2, 4, 458772, 2, 1, 458773, 2, 1, 458774, 2, 1, 458775, 2, 196612, 458776, 2, 65538, 524288, 3, 65536, 524289, 3, 65538, 524290, 4, 196608, 524291, 4, 196609, 524292, 4, 196609, 524293, 4, 196609, 524294, 4, 196610, 524295, 3, 0, 524296, 3, 1, 524297, 3, 1, 524298, 3, 1, 524299, 3, 2, 524300, 6, 196608, 524301, 6, 196609, 524302, 6, 196609, 524303, 6, 196609, 524304, 6, 196609, 524305, 6, 196610, 524306, 2, 131072, 524307, 2, 131073, 524308, 2, 131073, 524309, 2, 131073, 524310, 2, 131073, 524311, 2, 131073, 524312, 2, 131074, 589824, 3, 65536, 589825, 3, 4, 589826, 3, 1, 589827, 3, 1, 589828, 3, 1, 589829, 3, 1, 589830, 3, 1, 589831, 3, 196612, 589832, 3, 65537, 589833, 3, 65537, 589834, 3, 65537, 589835, 3, 4, 589836, 3, 1, 589837, 3, 1, 589838, 3, 1, 589839, 3, 1, 589840, 3, 1, 589841, 3, 2, 589842, 4, 196611, 589843, 4, 1, 589844, 4, 1, 589845, 4, 1, 589846, 4, 1, 589847, 4, 1, 589848, 4, 2, 655360, 3, 65536, 655377, 3, 65538, 655378, 4, 65539, 655384, 4, 65538, 720896, 3, 65536, 720913, 3, 65538, 720914, 4, 65539, 720920, 4, 65538, 786432, 3, 65536, 786449, 3, 65538, 786450, 4, 65539, 786456, 4, 65538, 851968, 3, 65536, 851985, 3, 65538, 851986, 4, 65539, 851992, 4, 65538, 917504, 3, 65536, 917521, 3, 65538, 917522, 4, 65539, 917528, 4, 65538, 983040, 3, 65536, 983057, 3, 65538, 983058, 4, 65539, 983064, 4, 65538, 1048576, 3, 65536, 1048593, 3, 65538, 1048594, 4, 131075, 1048600, 4, 65538 )
+
+[node name="StaticVegetation" parent="." instance=ExtResource( 2 )]
+collision_layer = 0
+collision_mask = 0
+tile_data = PoolIntArray( 131063, 2, 0, 262146, 0, 0, 327682, 0, 65536, 393218, 0, 131072, 393219, 0, 2, 458755, 0, 65538, 458756, 1, 65537, 458758, 1, 65538, 458759, 1, 65538, 458760, 1, 2, 458761, 1, 1 )
+
+[node name="PlayerSpawner" type="Position2D" parent="."]
+position = Vector2( 56, 120 )
+__meta__ = {
+"_gizmo_extents_": 50.0
+}
+
+[node name="jumpers" type="Node2D" parent="."]
+
+[node name="Jumper" parent="jumpers" instance=ExtResource( 4 )]
+position = Vector2( 40, 120 )
+jump_force = 400
+
+[node name="Jumper2" parent="jumpers" instance=ExtResource( 4 )]
+position = Vector2( 88, 120 )
+
+[node name="Jumper3" parent="jumpers" instance=ExtResource( 4 )]
+position = Vector2( 296, 24 )
+
+[node name="UpPush" type="Node2D" parent="."]
+
+[node name="UpPush2" parent="UpPush" instance=ExtResource( 6 )]
+position = Vector2( 168, 56 )
+force = 20
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpPush/UpPush2"]
+position = Vector2( 84, 8 )
+shape = SubResource( 4 )
+
+[node name="Portals" type="Node2D" parent="."]
+
+[node name="Portals" type="Node2D" parent="Portals"]
+script = SubResource( 9 )
+
+[node name="Portal1" type="Area2D" parent="Portals/Portals"]
+position = Vector2( 16, 48 )
+collision_layer = 0
+monitorable = false
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Portals/Portals/Portal1"]
+shape = SubResource( 2 )
+
+[node name="Particles2D" type="Particles2D" parent="Portals/Portals/Portal1"]
+amount = 50
+lifetime = 2.0
+preprocess = 1.0
+process_material = SubResource( 10 )
+
+[node name="Particles2D2" type="Particles2D" parent="Portals/Portals/Portal1"]
+amount = 5
+process_material = SubResource( 8 )
+texture = ExtResource( 8 )
+
+[node name="Portal2" type="Area2D" parent="Portals/Portals"]
+position = Vector2( 376, 16 )
+collision_layer = 0
+monitorable = false
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Portals/Portals/Portal2"]
+shape = SubResource( 2 )
+
+[node name="Particles2D" type="Particles2D" parent="Portals/Portals/Portal2"]
+amount = 50
+lifetime = 2.0
+preprocess = 1.0
+process_material = SubResource( 10 )
+
+[node name="Particles2D2" type="Particles2D" parent="Portals/Portals/Portal2"]
+amount = 5
+process_material = SubResource( 8 )
+texture = ExtResource( 7 )
+
+[node name="Timer" type="Timer" parent="Portals/Portals"]
+wait_time = 0.31
+
+[node name="StaticBody2D" type="Area2D" parent="."]
+position = Vector2( 192, 120 )
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = SubResource( 12 )
+__meta__ = {
+"_edit_group_": true
+}
+dialoge_name = "this is a thing"
+
+[node name="Sprite" type="Sprite" parent="StaticBody2D"]
+texture = ExtResource( 5 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+rotation = 1.57079
+shape = SubResource( 13 )
+
+[node name="RigidBody2D" parent="." instance=ExtResource( 9 )]
+position = Vector2( 240, 120 )
+
+[node name="RigidBody2D2" parent="." instance=ExtResource( 9 )]
+position = Vector2( 312, 24 )
+
+[node name="RigidBody2D3" parent="." instance=ExtResource( 9 )]
+position = Vector2( 272, -8 )
+
+[node name="Chains" type="Node2D" parent="."]
+
+[node name="Chain1" type="Node2D" parent="Chains"]
+position = Vector2( -56, 16 )
+
+[node name="Chain" type="RigidBody2D" parent="Chains/Chain1"]
+position = Vector2( 160, 24 )
+mode = 1
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain1/Chain"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 0, 16, 16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain1/Chain"]
+shape = SubResource( 14 )
+
+[node name="Chain2" type="RigidBody2D" parent="Chains/Chain1"]
+position = Vector2( 160, 40 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain1/Chain2"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 16, 16, 16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain1/Chain2"]
+shape = SubResource( 14 )
+
+[node name="Chain4" type="RigidBody2D" parent="Chains/Chain1"]
+position = Vector2( 160, 56 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain1/Chain4"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 16, 16, 16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain1/Chain4"]
+shape = SubResource( 14 )
+
+[node name="Chain5" type="RigidBody2D" parent="Chains/Chain1"]
+position = Vector2( 160, 72 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain1/Chain5"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 16, 16, 16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain1/Chain5"]
+shape = SubResource( 14 )
+
+[node name="Chain3" type="RigidBody2D" parent="Chains/Chain1"]
+position = Vector2( 160, 88 )
+mass = 2.0
+gravity_scale = 10.0
+linear_velocity = Vector2( 20, 0 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain1/Chain3"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 32, 16, 13 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain1/Chain3"]
+shape = SubResource( 14 )
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Chains/Chain1"]
+position = Vector2( 160, 32 )
+node_a = NodePath("../Chain")
+node_b = NodePath("../Chain2")
+disable_collision = false
+
+[node name="PinJoint2D2" type="PinJoint2D" parent="Chains/Chain1"]
+position = Vector2( 160, 48 )
+node_a = NodePath("../Chain2")
+node_b = NodePath("../Chain4")
+disable_collision = false
+
+[node name="PinJoint2D3" type="PinJoint2D" parent="Chains/Chain1"]
+position = Vector2( 160, 64 )
+node_a = NodePath("../Chain4")
+node_b = NodePath("../Chain5")
+disable_collision = false
+
+[node name="PinJoint2D4" type="PinJoint2D" parent="Chains/Chain1"]
+position = Vector2( 160, 80 )
+node_a = NodePath("../Chain5")
+node_b = NodePath("../Chain3")
+disable_collision = false
+
+[node name="Chain2" type="Node2D" parent="Chains"]
+position = Vector2( -24, 0 )
+
+[node name="Chain" type="RigidBody2D" parent="Chains/Chain2"]
+position = Vector2( 160, 24 )
+mode = 1
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain2/Chain"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 0, 16, 16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain2/Chain"]
+shape = SubResource( 14 )
+
+[node name="Chain2" type="RigidBody2D" parent="Chains/Chain2"]
+position = Vector2( 160, 40 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain2/Chain2"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 16, 16, 16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain2/Chain2"]
+shape = SubResource( 14 )
+
+[node name="Chain4" type="RigidBody2D" parent="Chains/Chain2"]
+position = Vector2( 160, 56 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain2/Chain4"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 16, 16, 16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain2/Chain4"]
+shape = SubResource( 14 )
+
+[node name="Chain5" type="RigidBody2D" parent="Chains/Chain2"]
+position = Vector2( 160, 72 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain2/Chain5"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 16, 16, 16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain2/Chain5"]
+shape = SubResource( 14 )
+
+[node name="Chain3" type="RigidBody2D" parent="Chains/Chain2"]
+position = Vector2( 160, 88 )
+mass = 2.0
+gravity_scale = 10.0
+linear_velocity = Vector2( 20, 0 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain2/Chain3"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 32, 16, 13 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain2/Chain3"]
+shape = SubResource( 14 )
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Chains/Chain2"]
+position = Vector2( 160, 32 )
+node_a = NodePath("../Chain")
+node_b = NodePath("../Chain2")
+disable_collision = false
+
+[node name="PinJoint2D2" type="PinJoint2D" parent="Chains/Chain2"]
+position = Vector2( 160, 48 )
+node_a = NodePath("../Chain2")
+node_b = NodePath("../Chain4")
+disable_collision = false
+
+[node name="PinJoint2D3" type="PinJoint2D" parent="Chains/Chain2"]
+position = Vector2( 160, 64 )
+node_a = NodePath("../Chain4")
+node_b = NodePath("../Chain5")
+disable_collision = false
+
+[node name="PinJoint2D4" type="PinJoint2D" parent="Chains/Chain2"]
+position = Vector2( 160, 80 )
+node_a = NodePath("../Chain5")
+node_b = NodePath("../Chain3")
+disable_collision = false
+
+[node name="Chain3" type="Node2D" parent="Chains"]
+position = Vector2( 24, 0 )
+
+[node name="Chain" type="RigidBody2D" parent="Chains/Chain3"]
+position = Vector2( 160, 24 )
+mode = 1
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain3/Chain"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 0, 16, 16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain3/Chain"]
+shape = SubResource( 14 )
+
+[node name="Chain2" type="RigidBody2D" parent="Chains/Chain3"]
+position = Vector2( 160, 40 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain3/Chain2"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 16, 16, 16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain3/Chain2"]
+shape = SubResource( 14 )
+
+[node name="Chain4" type="RigidBody2D" parent="Chains/Chain3"]
+position = Vector2( 160, 56 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain3/Chain4"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 16, 16, 16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain3/Chain4"]
+shape = SubResource( 14 )
+
+[node name="Chain5" type="RigidBody2D" parent="Chains/Chain3"]
+position = Vector2( 160, 72 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain3/Chain5"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 16, 16, 16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain3/Chain5"]
+shape = SubResource( 14 )
+
+[node name="Chain3" type="RigidBody2D" parent="Chains/Chain3"]
+position = Vector2( 160, 88 )
+mass = 2.0
+gravity_scale = 10.0
+linear_velocity = Vector2( 20, 0 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Chains/Chain3/Chain3"]
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 48, 32, 16, 13 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chains/Chain3/Chain3"]
+shape = SubResource( 14 )
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Chains/Chain3"]
+position = Vector2( 160, 32 )
+node_a = NodePath("../Chain")
+node_b = NodePath("../Chain2")
+disable_collision = false
+
+[node name="PinJoint2D2" type="PinJoint2D" parent="Chains/Chain3"]
+position = Vector2( 160, 48 )
+node_a = NodePath("../Chain2")
+node_b = NodePath("../Chain4")
+disable_collision = false
+
+[node name="PinJoint2D3" type="PinJoint2D" parent="Chains/Chain3"]
+position = Vector2( 160, 64 )
+node_a = NodePath("../Chain4")
+node_b = NodePath("../Chain5")
+disable_collision = false
+
+[node name="PinJoint2D4" type="PinJoint2D" parent="Chains/Chain3"]
+position = Vector2( 160, 80 )
+node_a = NodePath("../Chain5")
+node_b = NodePath("../Chain3")
+disable_collision = false
+
+[node name="JumperEnemy" parent="." instance=ExtResource( 11 )]
+position = Vector2( 176, -24 )
+
+[node name="JumperEnemy2" parent="." instance=ExtResource( 11 )]
+position = Vector2( 136, 112 )
+
+[connection signal="body_entered" from="Portals/Portals/Portal1" to="Portals/Portals" method="_on_Portal1_body_entered"]
+[connection signal="body_entered" from="Portals/Portals/Portal2" to="Portals/Portals" method="_on_Portal2_body_entered"]
+[connection signal="timeout" from="Portals/Portals/Timer" to="Portals/Portals" method="_on_Timer_timeout"]

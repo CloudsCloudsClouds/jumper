@@ -1,0 +1,65 @@
+[gd_scene load_steps=5 format=2]
+
+[sub_resource type="GDScript" id=6]
+script/source = "extends Area2D
+
+export var force:float = 25
+var collision:CollisionShape2D
+var cs:Vector2
+var objetive
+
+func _ready():
+	collision = $CollisionShape2D
+	position = collision.global_position
+	collision.global_position = global_position
+	cs = collision.shape.extents
+	$Particles2D.process_material.emission_box_extents = Vector3(cs.x,cs.y,1)
+	$Particles2D.process_material.gravity.y = -350 * (force / 25) * (force / 25)
+	$Particles2D.amount = 75 * ((cs.x * cs.y) / 100)
+	set_physics_process(false)
+	pass
+
+func _physics_process(delta):
+	if objetive.get_parent().has_method(\"_apply_vertical_velocity\"):
+		objetive.get_parent()._apply_vertical_velocity(force)
+	pass
+
+func _on_Area2D_area_entered(area):
+	objetive = area
+	set_physics_process(true)
+	pass # Replace with function body.
+
+
+func _on_Area2D_area_exited(area):
+	set_physics_process(false)
+	objetive = null
+	pass # Replace with function body.
+"
+
+[sub_resource type="Curve" id=2]
+_data = [ Vector2( 0, 0 ), 0.0, 3.60682, 0, 0, Vector2( 0.0380435, 1 ), 0.124565, 0.124565, 0, 0, Vector2( 0.358696, 0.0102272 ), 0.890322, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=3]
+curve = SubResource( 2 )
+
+[sub_resource type="ParticlesMaterial" id=7]
+emission_shape = 2
+emission_box_extents = Vector3( 1, 1, 1 )
+flag_disable_z = true
+gravity = Vector3( 0, -98, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale_curve = SubResource( 3 )
+
+[node name="UpPush" type="Area2D"]
+collision_layer = 2
+collision_mask = 2
+monitorable = false
+script = SubResource( 6 )
+
+[node name="Particles2D" type="Particles2D" parent="."]
+amount = 50
+process_material = SubResource( 7 )
+
+[connection signal="area_entered" from="." to="." method="_on_Area2D_area_entered"]
+[connection signal="area_exited" from="." to="." method="_on_Area2D_area_exited"]

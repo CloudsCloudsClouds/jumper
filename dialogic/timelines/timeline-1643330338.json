@@ -1,0 +1,43 @@
+{
+	"events": [
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Cuando volvi a mi casa no parecia que nada hubiera cambiado."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Pero en realidad, de esto me daria cuenta meses mas tarde, un libro habia desaparecido del librero."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Unos dias despues desapareceria un paraguas, un cepillo, un plato, una tasa y 2 vasos."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "¿Crees que no me doy cuenta?\nDe todas formas, seria patetico terminar una amistad por eso."
+		},
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Igual, pasaron unos meses, y aun debo pedirle un favor urgente.\nPero es cierto, nada a cambiado."
+		},
+		{
+			"emit_signal": "end",
+			"event_id": "dialogic_040"
+		}
+	],
+	"metadata": {
+		"dialogic-version": "1.3",
+		"file": "timeline-1643330338.json",
+		"name": "Cuando volvio"
+	}
+}
